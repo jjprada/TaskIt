@@ -8,6 +8,8 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+
 
 public class TaskListActivity extends ActionBarActivity {
 
@@ -16,8 +18,10 @@ public class TaskListActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_task_list);
 
+        String[] items = {"1", "2", "3", "4"};
+
         ListView taskList = (ListView)findViewById(R.id.task_list);
-        taskList.setAdapter(new ArrayAdapter<String>(this, TextView));
+        taskList.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, items));
     }
 
 
