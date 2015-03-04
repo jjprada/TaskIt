@@ -1,5 +1,6 @@
 package com.jjprada.taskit;
 
+import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -16,7 +17,7 @@ import android.widget.TextView;
 
 public class TaskListActivity extends ActionBarActivity {
 
-    private static final String TAG = "MainActivity";
+    private static final String TAG = "TaskListActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,8 +40,10 @@ public class TaskListActivity extends ActionBarActivity {
         taskList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Log.d(TAG, "Position click is " + position);
-
+                Intent i = new Intent(TaskListActivity.this, TaskActivity.class);
+                Task task = (Task)parent.getAdapter().getItem(position);
+                i.putExtra(TaskActivity.EXTRA, task);
+                startActivity(i);
             }
         });
     }
