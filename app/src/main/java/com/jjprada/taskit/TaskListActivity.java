@@ -14,10 +14,14 @@ import android.widget.CheckBox;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import java.util.Date;
+
 
 public class TaskListActivity extends ActionBarActivity {
 
     private static final String TAG = "TaskListActivity";
+    public static final String EXTRA = "TaskExtra";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,6 +31,7 @@ public class TaskListActivity extends ActionBarActivity {
         Task[] items = new Task[3];
         items[0] = new Task();
         items[0].setName("Task 1");
+        items[0].setDueDate(new Date());
         items[1] = new Task();
         items[1].setName("Task 2");
         items[1].setDone(true);

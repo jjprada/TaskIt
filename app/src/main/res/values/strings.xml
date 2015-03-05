@@ -6,4 +6,7 @@
     <string name="title_activity_task">TaskActivity</string>
 
     <string name="done">Done:</string>
+    <string name="save_button">Save</string>
+    <string name="no_date">No date selected</string>
+
 </resources>
