@@ -8,6 +8,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
@@ -20,37 +21,54 @@ import java.util.Date;
 public class TaskListActivity extends ActionBarActivity {
 
     private static final String TAG = "TaskListActivity";
-    public static final String EXTRA = "TaskExtra";
+    private static final int EDIT_TASK_REQUEST = 10;
 
+    private Task[] mTasks;
+    private int mLastItemSelected;
+    private TaskAdapter mAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_task_list);
 
-        Task[] items = new Task[3];
-        items[0] = new Task();
-        items[0].setName("Task 1");
-        items[0].setDueDate(new Date());
-        items[1] = new Task();
-        items[1].setName("Task 2");
-        items[1].setDone(true);
-        items[2] = new Task();
-        items[2].setName("Task 3");
-        items[2].setDone(true);
+        mTasks = new Task[3];
+        mTasks[0] = new Task();
+        mTasks[0].setName("Task 1");
+        mTasks[1] = new Task();
+        mTasks[1].setName("Task 2");
+        mTasks[1].setDone(true);
+        mTasks[2] = new Task();
+        mTasks[2].setName("Task 3");
+        mTasks[2].setDone(true);
 
         ListView taskList = (ListView)findViewById(R.id.task_list);
-        taskList.setAdapter(new TaskAdapter(items));
-
+        mAdapter = new TaskAdapter(mTasks);
+        taskList.setAdapter(mAdapter);
+        
         taskList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                mLastItemSelected = position;
                 Intent i = new Intent(TaskListActivity.this, TaskActivity.class);
-                Task task = (Task)parent.getAdapter().getItem(position);
+                Task task = (Task) parent.getAdapter().getItem(position);
                 i.putExtra(TaskActivity.EXTRA, task);
-                startActivity(i);
+                startActivityForResult(i, EDIT_TASK_REQUEST);
             }
         });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == EDIT_TASK_REQUEST){
+            if (resultCode == RESULT_OK){
+                Task task = (Task)data.getSerializableExtra(TaskActivity.EXTRA);
+                mTasks[mLastItemSelected] = task;
+                mAdapter.notifyDataSetChanged();
+            }
+        }
     }
 
     private class TaskAdapter extends ArrayAdapter<Task>{
@@ -73,7 +91,6 @@ public class TaskListActivity extends ActionBarActivity {
             return convertView;
         }
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

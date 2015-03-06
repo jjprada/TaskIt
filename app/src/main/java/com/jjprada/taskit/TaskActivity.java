@@ -25,7 +25,9 @@ public class TaskActivity extends ActionBarActivity {
 
     private Calendar mCal;
     private Task mTask;
+    private EditText mTaskNameInput;
     private Button mDateButton;
+    private CheckBox mDoneBox;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,24 +37,23 @@ public class TaskActivity extends ActionBarActivity {
         mTask = (Task)getIntent().getSerializableExtra(EXTRA);
 
         mCal = Calendar.getInstance();
-        mCal.setTime(mTask.getDueDate());
 
-        EditText taskNameInput = (EditText)findViewById(R.id.task_name);
+        mTaskNameInput = (EditText)findViewById(R.id.task_name);
         mDateButton = (Button)findViewById(R.id.task_date);
-        final CheckBox doneBox = (CheckBox)findViewById(R.id.task_done);
+        mDoneBox = (CheckBox)findViewById(R.id.task_done);
         Button saveButton = (Button)findViewById(R.id.save_button);
 
-
-        taskNameInput.setText(mTask.getName());
+        mTaskNameInput.setText(mTask.getName());
 
         if (mTask.getDueDate() == null){
+            mCal.setTime(new Date());
             mDateButton.setText(getResources().getString(R.string.no_date));
         } else {
             updateDateButton();
         }
 
-        doneBox.setChecked(mTask.isDone());
-        mTask.setDone(doneBox.isChecked());
+        mDoneBox.setChecked(mTask.isDone());
+        mTask.setDone(mDoneBox.isChecked());
 
         mDateButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -76,9 +77,16 @@ public class TaskActivity extends ActionBarActivity {
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                Intent i = new Intent(TaskActivity.this, TaskListActivity.class);
-//               i.putExtra(TaskListActivity.EXTRA, mTask);
-//                startActivity(i);
+                mTask.setName(mTaskNameInput.getText().toString());
+                mTask.setDone(mDoneBox.isChecked());
+                mTask.setDueDate(mCal.getTime());
+
+                Intent i = new Intent();
+                i.putExtra(EXTRA, mTask);
+                setResult(RESULT_OK, i);
+                finish();
+
+
             }
         });
 
