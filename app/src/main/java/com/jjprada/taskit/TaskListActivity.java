@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -15,6 +16,7 @@ import android.widget.CheckBox;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 
@@ -22,8 +24,9 @@ public class TaskListActivity extends ActionBarActivity {
 
     private static final String TAG = "TaskListActivity";
     private static final int EDIT_TASK_REQUEST = 10;
+    private static final int CREATE_TASK_REQUEST = 20;
 
-    private Task[] mTasks;
+    private ArrayList<Task> mTasks;
     private int mLastItemSelected;
     private TaskAdapter mAdapter;
 
@@ -32,15 +35,15 @@ public class TaskListActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_task_list);
 
-        mTasks = new Task[3];
-        mTasks[0] = new Task();
-        mTasks[0].setName("Task 1");
-        mTasks[1] = new Task();
-        mTasks[1].setName("Task 2");
-        mTasks[1].setDone(true);
-        mTasks[2] = new Task();
-        mTasks[2].setName("Task 3");
-        mTasks[2].setDone(true);
+        mTasks = new ArrayList<>();
+        mTasks.add(new Task());
+        mTasks.get(0).setName("Task 1");
+        mTasks.add(new Task());
+        mTasks.get(1).setName("Task 2");
+        mTasks.get(1).setDone(true);
+        mTasks.add(new Task());
+        mTasks.get(2).setName("Task 3");
+        mTasks.get(2).setDone(true);
 
         ListView taskList = (ListView)findViewById(R.id.task_list);
         mAdapter = new TaskAdapter(mTasks);
@@ -56,23 +59,34 @@ public class TaskListActivity extends ActionBarActivity {
                 startActivityForResult(i, EDIT_TASK_REQUEST);
             }
         });
+
+        registerForContextMenu(taskList);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == EDIT_TASK_REQUEST){
-            if (resultCode == RESULT_OK){
-                Task task = (Task)data.getSerializableExtra(TaskActivity.EXTRA);
-                mTasks[mLastItemSelected] = task;
-                mAdapter.notifyDataSetChanged();
-            }
+        switch (requestCode){
+            case EDIT_TASK_REQUEST:
+                if (resultCode == RESULT_OK){
+                    Task task = (Task)data.getSerializableExtra(TaskActivity.EXTRA);
+                    mTasks.set(mLastItemSelected, task);
+                    mAdapter.notifyDataSetChanged();
+                }
+                break;
+            case CREATE_TASK_REQUEST:
+                if (resultCode == RESULT_OK){
+                    Task task = (Task)data.getSerializableExtra(TaskActivity.EXTRA);
+                    mTasks.add(task);
+                    mAdapter.notifyDataSetChanged();
+                }
+                break;
         }
     }
 
     private class TaskAdapter extends ArrayAdapter<Task>{
-         TaskAdapter(Task[] task){
+         TaskAdapter(ArrayList<Task> task){
              super(TaskListActivity.this, R.layout.task_list_row, R.id.task_item_name, task);
          }
 
@@ -95,7 +109,7 @@ public class TaskListActivity extends ActionBarActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_task_list, menu);
+            getMenuInflater().inflate(R.menu.menu_task_list, menu);
         return true;
     }
 
@@ -107,10 +121,22 @@ public class TaskListActivity extends ActionBarActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.add_task) {
+            Intent i = new Intent(TaskListActivity.this, TaskActivity.class);
+            startActivityForResult(i, CREATE_TASK_REQUEST);
             return true;
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        return super.onContextItemSelected(item);
     }
 }

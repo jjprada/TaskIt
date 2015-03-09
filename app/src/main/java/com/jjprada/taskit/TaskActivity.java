@@ -34,7 +34,10 @@ public class TaskActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_task);
 
-        mTask = (Task)getIntent().getSerializableExtra(EXTRA);
+        mTask = (Task)getIntent().getSerializableExtra(EXTRA);      // Venimos del boton editar
+        if (mTask == null){                                         // Venimos del botón añadir
+            mTask = new Task();
+        }
 
         mCal = Calendar.getInstance();
 
