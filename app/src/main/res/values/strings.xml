@@ -10,4 +10,5 @@
     <string name="no_date">No date selected</string>
 
     <string name="add_task">Add Task</string>
+    <string name="delete_task">Delete</string>
 </resources>
