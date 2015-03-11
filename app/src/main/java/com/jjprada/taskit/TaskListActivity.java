@@ -40,14 +40,6 @@ public class TaskListActivity extends ActionBarActivity {
         setContentView(R.layout.activity_task_list);
 
         mTasks = new ArrayList<>();
-        mTasks.add(new Task());
-        mTasks.get(0).setName("Task 1");
-        mTasks.add(new Task());
-        mTasks.get(1).setName("Task 2");
-        mTasks.get(1).setDone(true);
-        mTasks.add(new Task());
-        mTasks.get(2).setName("Task 3");
-        mTasks.get(2).setDone(true);
 
         mListView = (ListView)findViewById(R.id.task_list);
         mAdapter = new TaskAdapter(mTasks);
@@ -68,7 +60,7 @@ public class TaskListActivity extends ActionBarActivity {
         mListView.setMultiChoiceModeListener(new AbsListView.MultiChoiceModeListener() {
             @Override
             public void onItemCheckedStateChanged(ActionMode mode, int position, long id, boolean checked) {
-                
+
             }
 
             @Override
